@@ -4,7 +4,7 @@ pub enum InputType {
     Test,
 }
 
-pub fn read_puzzle_input(day: u8, input_type: InputType) -> String {
+pub fn read_puzzle_input(day: usize, input_type: InputType) -> String {
     let day_folder = format!("day{day}");
 
     let path = match input_type {

@@ -1,4 +1,7 @@
-use std::io::{self, Write};
+use std::{
+    env,
+    io::{self, Write},
+};
 use utils::{read_puzzle_input, InputType};
 
 mod utils;
@@ -29,57 +32,64 @@ mod day1;
 // mod day24;
 // mod day25;
 
-fn main() {
-    let mut day = String::new();
-    let mut part = String::new();
-    let mut input_type = String::new();
+fn read_line() -> String {
+    io::read_to_string(io::stdin()).expect("Failed to read line")
+}
 
-    print!("Qual dia? ");
-    let _ = io::stdout().flush();
+fn print(string: &str) {
+    print!("{string}");
+    io::stdout().flush();
+}
 
-    io::stdin()
-        .read_line(&mut day)
-        .expect("Failed to read line");
-    
-    print!("Parte 1 ou 2? ");
-    let _ = io::stdout().flush();
+fn parse_int(input: String, err_msg: &str) -> usize {
+    input.trim().parse::<usize>().expect(err_msg)
+}
 
-    io::stdin()
-        .read_line(&mut part)
-        .expect("Failed to read line");
-
-    print!("[1] Input\n[2] Teste\n> ");
-    let _ = io::stdout().flush();
-
-    io::stdin()
-        .read_line(&mut input_type)
-        .expect("Failed to read line");
-
-    let day = day
-        .trim()
-        .parse::<u8>()
-        .expect("Dia informado não é um número");
-    
-    let part = part
-        .trim()
-        .parse::<u8>()
-        .expect("Parte informada não é um número");
-    
-    let input_type = match input_type
-        .trim()
-        .parse::<u8>()
-        .expect("Tipo informado não é um número") {
+fn parse_input_type(in_type: usize) -> InputType {
+    match in_type {
         1 => InputType::Input,
         2 => InputType::Test,
         _ => InputType::Input,
+    }
+}
+
+fn prompt(prompt: &str, err_msg: &str) -> usize {
+    print(prompt);
+    parse_int(read_line(), err_msg)
+}
+
+fn cli() -> (usize, usize, InputType) {
+    let day = prompt("Qual dia? ", "Dia informado não é um número");
+    let part = prompt("Parte 1 ou 2? ", "Parte informada não é um número");
+    let input_type = prompt("[1] Input\n[2] Teste\n> ", "Tipo informado não é um número");
+
+    let input_type = match input_type {
+        1 => InputType::Input,
+        2 => InputType::Test,
+        _ => InputType::Input,
+    };
+
+    (day, part, input_type)
+}
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let (day, part, input_type) = match args.as_slice() {
+        [_, d, p, i] => (
+            parse_int(d.to_string(), ""),
+            parse_int(p.to_string(), ""),
+            parse_input_type(parse_int(i.to_string(), "")),
+        ),
+        _ => cli(),
     };
 
     let input = read_puzzle_input(day, input_type);
 
     let result = match (day, part) {
         (1, 1) => day1::part1::solution(&input),
-        _ => panic!("AAAAAAAAAAAA")
+        _ => panic!("AAAAAAAAAAAA"),
     };
-     
+
     print!("{result}")
 }
