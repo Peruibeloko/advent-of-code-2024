@@ -1,3 +1,3 @@
-pub fn solution(input: &str) -> usize {
+pub fn solution(_input: &str) -> usize {
     todo!()
 }
