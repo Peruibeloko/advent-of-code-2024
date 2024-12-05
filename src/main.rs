@@ -38,7 +38,7 @@ fn read_line() -> String {
 
 fn print(string: &str) {
     print!("{string}");
-    io::stdout().flush();
+    let _ = io::stdout().flush();
 }
 
 fn parse_int(input: String, err_msg: &str) -> usize {
